@@ -1,0 +1,22 @@
+version: '2'
+services:
+    redis_user:
+        image: sickp/alpine-redis:3.2.2
+        ports:
+            - "6379:6379"
+    postgres_user:
+        container_name: postgres_user
+        image: postgres
+        restart: always
+        ports:
+          - 5432:5432
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: user_db
+        volumes:
+          - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+    driver: local
