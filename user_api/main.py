@@ -1,8 +1,10 @@
-import logging
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 from user_api import create_app
-
-
-LOGGER = logging.getLogger(__name__)
 
 
 app = create_app()

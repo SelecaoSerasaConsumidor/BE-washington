@@ -16,6 +16,34 @@ services:
           POSTGRES_DB: user_db
         volumes:
           - pg-data:/var/lib/postgresql/data
+        networks:
+          - default
+
+    user_service:
+        container_name: user_service_application
+        restart: always
+        build:
+          context: ./
+          dockerfile: Dockerfile
+        ports:
+          - '8080:8080'
+          - '3306:3306'
+        environment:
+          ENV: dev
+          FLASK_ENV: development
+          DATABASE_URL: 'postgresql://postgres:postgres@0.0.0.0:5432/user_db'
+        network_mode: host
+
+    migrations:
+      extends:
+        service: user_service
+      command: flask db upgrade -d adapters/gateway/sql/migrations
+      depends_on:
+        - postgres_user
+
+networks:
+    default:
+        driver: bridge
 
 volumes:
   pg-data:

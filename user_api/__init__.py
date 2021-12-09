@@ -1,13 +1,15 @@
+import logging
 from flask import Flask
 from flask_restplus import Api, reqparse
-
 from flask_migrate import Migrate
-from user_api.adapters.gateway.sql.models.user import UserModel, db
-from user_api.entities.user import ma
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import cached_property
 
+from user_api.adapters.gateway.sql.models.user import UserModel, db
+from user_api.entities.user import ma
 from user_api.adapters.endpoints.user import api as user
+
+LOGGER = logging.getLogger(__name__)
 
 migrate = Migrate()
 
@@ -25,7 +27,7 @@ def create_app():
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/user_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@0.0.0.0:5432/user_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
     api = Api(
