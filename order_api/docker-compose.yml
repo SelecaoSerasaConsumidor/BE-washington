@@ -1,0 +1,41 @@
+version: '2'
+services:
+    redis_order:
+        image: sickp/alpine-redis:3.2.2
+        ports:
+            - "6380:6379"
+    postgres_order:
+        container_name: order_postgres
+        image: postgres
+        restart: always
+        ports:
+          - 5442:5432
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: order_db
+        volumes:
+          - pg-data:/var/lib/postgresql/data
+
+    order_service:
+        container_name: order_service_application
+        restart: always
+        build:
+          context: ./
+          dockerfile: Dockerfile
+        ports:
+          - '8081:8081'
+          - '3307:3307'
+        environment:
+          ENV: dev
+          FLASK_ENV: development
+          DATABASE_URL: 'postgresql://postgres:postgres@localhost:5442/order_db'
+        network_mode: host
+
+networks:
+    default:
+        driver: bridge
+
+volumes:
+  pg-data:
+    driver: local
