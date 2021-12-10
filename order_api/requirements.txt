@@ -36,6 +36,7 @@ Mako==1.1.6
 Manager==2.0.3
 MarkupSafe==2.0.1
 marshmallow==3.14.1
+marshmallow-sqlalchemy==0.26.1
 mypy-extensions==0.4.3
 openapi-schema-validator==0.1.5
 openapi-spec-validator==0.3.1

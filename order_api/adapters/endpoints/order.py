@@ -1,4 +1,5 @@
 import json
+import logging
 
 from flask import make_response, jsonify, request
 from flask_cors import cross_origin
@@ -17,23 +18,29 @@ order = api.model('order', {
     }
 )
 
+LOGGER = logging.getLogger(__name__)
+
 
 @api.route("/")
 class OrderAPI(Resource):
 
     @cross_origin()
     def get(self):
+        LOGGER.info(f"[Order API] Method GET started...")
         order_use_case = OrderUseCase()
         orders = order_use_case.get_all()
+        LOGGER.info(f"[Order API] Method GET finished {orders}.")
         return make_response({"orders": orders}, 200)
 
     @cross_origin()
     @api.expect(order)
     def post(self):
+        LOGGER.info(f"[Order API] Method POST started...")
         order_use_case = OrderUseCase()
         order = request.get_json()
         order_entity = OrderEntity().dump(order)
         result = order_use_case.insert(order_entity)
+        LOGGER.info(f"[Order API] Method POST finished.")
         return make_response(result, 200)
 
 
@@ -42,23 +49,29 @@ class OrderDetail(Resource):
 
     @cross_origin()
     def get(self, id):
+        LOGGER.info(f"[Order API] Method GET by ID started...")
         order_use_case = OrderUseCase()
         order = order_use_case.get_by_id(id)
+        LOGGER.info(f"[Order API] Method GET by ID finished.")
         return make_response(order, 200)
 
     @cross_origin()
     def delete(self, id):
+        LOGGER.info(f"[Order API] Method DELETE by ID started...")
         order_use_case = OrderUseCase()
         result = order_use_case.delete(id)
+        LOGGER.info(f"[Order API] Method DELETE by ID finished.")
         return make_response(result, 200)
 
     @cross_origin()
     @api.expect(order)
     def put(self, id):
+        LOGGER.info(f"[Order API] Method PUT by ID started...")
         order_use_case = OrderUseCase()
         order = request.get_json()
         order_entity = OrderEntity().dump(order)
         result = order_use_case.update(id, order_entity)
+        LOGGER.info(f"[Order API] Method PUT by ID finished.")
         return make_response(result, 200)
 
 
@@ -67,6 +80,8 @@ class OrderIntegration(Resource):
 
     @cross_origin()
     def get(self, user_id):
+        LOGGER.info(f"[Order API] Method GET by USER_ID started...")
         order_use_case = OrderUseCase()
         orders = order_use_case.get_by_user_id(user_id)
+        LOGGER.info(f"[Order API] Method GET by USER_ID finished.")
         return make_response({"orders": orders}, 200)

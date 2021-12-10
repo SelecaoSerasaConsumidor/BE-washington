@@ -9,33 +9,31 @@ from user_api.adapters.gateway.sql.models.user import UserModel, db
 from user_api.entities.user import ma
 from user_api.adapters.endpoints.user import api as user
 
-LOGGER = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+handle = logging.StreamHandler()
+handle.setLevel(logging.DEBUG)
+logger.handle = []
+logger.addHandler(handle)
+logger.setLevel(logging.INFO)
+
 
 migrate = Migrate()
 
-# authorizations = {
-#     'apikey': {
-#         'type': 'apiKey',
-#         'in': 'header',
-#         'name': 'Authorization',
-#         'description': "Type in the *'Value'* input box below: **'Bearer &lt;JWT&gt;'**, where JWT is the token"
-#     }
-# }
-
 
 def create_app():
+
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@0.0.0.0:5432/user_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config['FLASK_APP'] = 'main'
 
     api = Api(
         app,
         title='Users API',
         version='1.0',
         description='API',
-        # authorizations=authorizations,
         security='apikey',
         doc='/swagger'
     )

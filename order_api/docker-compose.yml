@@ -32,13 +32,6 @@ services:
           DATABASE_URL: 'postgresql://postgres:postgres@localhost:5442/order_db'
         network_mode: host
 
-    migrations:
-      extends:
-        service: order_service
-      command: flask db upgrade -d adapters/gateway/sql/migrations
-      depends_on:
-        - postgres_order
-
 networks:
     default:
         driver: bridge
